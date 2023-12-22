@@ -1,0 +1,15 @@
+/venv
+/val
+/__pycache__
+*.jpg
+*.JPG
+*.jpeg
+*.JPEG
+*.png
+*.PNG
+*.gif
+*.GIF
+*.bmp
+*.BMP
+*.svg
+*.SVG
