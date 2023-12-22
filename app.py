@@ -12,6 +12,13 @@ import asyncio
 
 app = Flask(__name__)
 
+@app.route('/') 
+def index():
+    return 'Api Working Succesful!'
+
+ 
+ 
+
 # Load the model architecture
 model = Sequential()
 model.add(Convolution2D(32, 3, 3, input_shape=(128, 128, 3), activation='relu'))

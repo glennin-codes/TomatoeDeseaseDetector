@@ -13,3 +13,4 @@
 *.BMP
 *.svg
 *.SVG
+.env
