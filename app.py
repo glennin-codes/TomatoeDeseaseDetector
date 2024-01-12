@@ -7,10 +7,11 @@ from keras.preprocessing.image import ImageDataGenerator
 import os
 from bs4 import BeautifulSoup
 import requests
-import aiohttp
-import asyncio
-
+# import aiohttp
+# import asyncio
+from googleSearch import search_and_extract
 app = Flask(__name__)
+
 
 @app.route('/') 
 def index():
@@ -50,8 +51,10 @@ training_set = train_datagen.flow_from_directory(
     class_mode='categorical'
 )
 
+
 # Obtain class indices
 label_map = training_set.class_indices
+
 
 # Define an endpoint for predicting the disease class
 @app.route('/predict', methods=['POST'])
@@ -79,30 +82,11 @@ async def predict():
 
         # Get the class label from the label map
         predicted_class_name = [k for k, v in label_map.items() if v == predicted_class][0]
-        disease_info = await get_disease_information(predicted_class_name)
+        query=f"{predicted_class_name} treatement"
+        search_results = search_and_extract(query, num_results=2)
         # Return the prediction and disease information as JSON
-        result = {'prediction': predicted_class_name, 'disease_info': disease_info}
+        result = {'prediction': predicted_class_name, 'result':search_results}
         return jsonify(result)
-async def get_disease_information(disease_name):
-    search_url = f'https://www.bing.com/search?q={disease_name} disease treatment'
-    
-    async with aiohttp.ClientSession() as session:
-        async with session.get(search_url) as response:
-            print(response)
-            if response.status == 200:
-                soup = BeautifulSoup(await response.text(), 'html.parser')
-
-                # Check if the element with class 'b_caption' is found
-                result_div = soup.find('div', {'class': 'b_caption'})
-                if result_div:
-                    # Extract relevant information from the search results
-                    # You may need to inspect the HTML structure of the search results and adjust this part accordingly
-                    information = result_div.text.strip()
-                    return information
-                else:
-                    return 'No information found'
-            else:
-                return 'Failed to retrieve information'
 
 if __name__ == '__main__':
     app.run(debug=True)
