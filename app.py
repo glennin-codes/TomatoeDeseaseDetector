@@ -57,7 +57,7 @@ label_map = training_set.class_indices
 
 
 # Define an endpoint for predicting the disease class
-@app.route('/predict', methods=['POST'])
+@app.route('/api/predict', methods=['POST'])
 async def predict():
     if request.method == 'POST':
         # Get the file from the request
