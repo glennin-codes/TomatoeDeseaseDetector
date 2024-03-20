@@ -7,15 +7,16 @@ from keras.preprocessing.image import ImageDataGenerator
 import os
 from bs4 import BeautifulSoup
 import requests
+from flask_cors import CORS
 # import aiohttp
 # import asyncio
 from googleSearch import search_and_extract
 app = Flask(__name__)
-
+CORS(app)
 
 @app.route('/') 
 def index():
-    return 'Api Working Succesful!'
+    return 'Api Working Succesful! hello world '
 
  
  
@@ -62,7 +63,8 @@ async def predict():
     if request.method == 'POST':
         # Get the file from the request
         file = request.files['file']
-
+        id = request.args.get('id')
+        
         # Extract the original filename and extension
         original_filename, extension = os.path.splitext(file.filename)
 
@@ -85,8 +87,22 @@ async def predict():
         query=f"{predicted_class_name} treatement"
         search_results = search_and_extract(query, num_results=2)
         # Return the prediction and disease information as JSON
-        result = {'prediction': predicted_class_name, 'result':search_results}
-        return jsonify(result)
+        result = {'prediction': predicted_class_name, 'result':search_results,"message":"saved to db succesfuly"}
+          # Make a PUT request to  Node.js server
+        if result:
+            node_api_url = f'http://localhost:8080/api/predict/{id}'
+            print(id)
+            data = { 'diseaseName': predicted_class_name}
+            response = requests.patch(node_api_url, json=data)
+            if response.ok:
+               return jsonify(result),200
+            else:
+                return jsonify({'error': f'Failed to update user data in Node.js API: {response.text}'}), 500
+
+
+        return jsonify({'error': 'Prediction failed'}), 400
+          
+        
 
 if __name__ == '__main__':
     app.run(debug=True)
