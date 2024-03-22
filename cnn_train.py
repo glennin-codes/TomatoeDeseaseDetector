@@ -15,6 +15,7 @@ from keras.layers import Flatten
 from keras.layers import Dense
 from keras.layers import Dropout
 import numpy as np
+import scipy
 
 # from keras.utils.vis_utils import plot_model
 

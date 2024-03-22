@@ -14,6 +14,13 @@ def extract_content(url):
             'Connection': 'keep-alive'
         }
         response = requests.get(url, headers=headers, timeout=10)
+        if response.status_code == 429:
+             return {
+            'url': "Exception Occurred",
+            'title': 'Exception Occurred',
+            'content': 'The engine was unable to get more information; please come back later .'
+        }
+
         soup = BeautifulSoup(response.text, 'html.parser')
 
         title = soup.title.text.strip() if soup.title else 'No Title'
@@ -42,7 +49,7 @@ def extract_content(url):
                 return None
 
             # Use '\n' as the separator to preserve visual separation of elements
-        text_content = BeautifulSoup(str(main_content), 'html.parser').get_text(separator=' ', strip=True)
+        text_content = BeautifulSoup(str(main_content), 'html.parser').get_text(separator='\n', strip=True)
             
         return {
                 'url': url,
