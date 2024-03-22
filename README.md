@@ -66,6 +66,16 @@ Response Format:
     ]
 }
 ```
+## How it works?
+
+- **Upload Image**: Users create an account and upload an image of a tomato to the platform.
+  
+- **Image Classification**: The AI system analyzes the uploaded image using a trained model to classify the tomato into one of several possible diseases. This classification is based on patterns and features extracted from the image.
+
+- **Treatment Recommendations**: After classifying the tomato disease, the system is able to search through the internet or online resources to gather relevant information about the detected disease. It then provides users with recommended treatments or management strategies sourced from credible online sources.
+
+- **User Feedback and Improvement**: Users can provide feedback on the accuracy of the classification and the usefulness of the provided treatment recommendations. This feedback loop helps improve the AI model's performance over time, leading to more accurate classifications and better treatment suggestions.
+
 
 ## Future Improvements:
 
@@ -78,4 +88,4 @@ Response Format:
 This API provides a valuable tool for farmers and agricultural professionals to identify and mitigate tomato plant diseases early, contributing to improved crop yield and food security.
 - Further enhancements and optimizations can be made to improve the accuracy and usability of the API.
 
-This project is licensed under the MIT License - see the [LICENSE](#LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/glennin-codes/TomatoeDeseaseDetector/blob/main/LICENSE) file for details.
