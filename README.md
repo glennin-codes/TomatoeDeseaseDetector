@@ -12,8 +12,9 @@ Treatment Information: Retrieves treatment information for the predicted disease
 Endpoint: /predict
 Method: POST
 Parameters: Id ``get id after you create an acount here ``,
-Body: Image file `` should be of either jpg,png and webp only``
+Body: Image file ``should be of either jpg,png and webp only``
 Response: JSON object containing the predicted disease and treatment information.
+
 Response Format:
 
 ```json 
@@ -27,11 +28,12 @@ Response Format:
             "title": "Treatment Title",
             "content": "Treatment Content (TEXT)"
         },
-        ...
+    
     ]
 }
-status code ``200``
 ```
+status code ``200``
+
 #### Setup
 - Clone the repository.
 - Install the required Python dependencies listed in requirements.txt.
