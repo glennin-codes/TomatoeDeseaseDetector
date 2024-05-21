@@ -10,7 +10,11 @@ import requests
 from flask_cors import CORS
 # import aiohttp
 # import asyncio
+from agrovets_location import find_nearest_agrovets,generate_google_maps_link,get_place_details,generate_photo_url
 from googleSearch import search_and_extract
+from dotenv import load_dotenv
+
+load_dotenv()
 app = Flask(__name__)
 CORS(app)
 
@@ -18,7 +22,47 @@ CORS(app)
 def index():
     return 'Api Working Succesful! hello world '
 
- 
+@app.route('/location', methods=['GET'])
+def  location():
+    # Replace with your actual API key
+    api_key = os.getenv('api_key')
+
+
+    # Latitude and Longitude of Nairobi (center)
+    nairobi_location = "-1.286389,36.817223"
+    
+  # Search for agrovets
+    agrovets = find_nearest_agrovets(api_key, nairobi_location)
+    result = []
+    
+    if agrovets:
+        for agrovet in agrovets:
+            place_id = agrovet.get("place_id")
+            details = get_place_details(api_key, place_id)
+            photos = agrovet.get("photos", [])
+            photo_url = generate_photo_url(photos[0]["photo_reference"], api_key) if photos else None
+            if details:
+                name = details.get("name")
+                address = details.get("vicinity")
+                phone_number = details.get("formatted_phone_number")
+                maps_link = generate_google_maps_link(place_id)
+                print(f"Name: {name}\nAddress: {address}\nPhone Number: {phone_number}\nGoogle Maps Link: {maps_link}\nphoto:{photo_url}\n")
+                
+                result.append({
+                    "Name": name,
+                    "Address": address,
+                    "Phone Number": phone_number,
+                    "Google Maps Link": maps_link,
+                    "Photo": photo_url
+                })
+        return jsonify(result)
+    else:
+        print("No agrovets found.") 
+        return jsonify({'error': 'No agrovets found.'}), 404
+
+
+
+   
  
 
 # Load the model architecture
@@ -84,10 +128,10 @@ async def predict():
 
         # Get the class label from the label map
         predicted_class_name = [k for k, v in label_map.items() if v == predicted_class][0]
-        query=f"{predicted_class_name} treatement"
-        search_results = search_and_extract(query, num_results=2)
+        # query=f"{predicted_class_name} treatement"
+        # search_results = search_and_extract(query, num_results=2)
         # Return the prediction and disease information as JSON
-        result = {'prediction': predicted_class_name, 'result':search_results,"message":"saved to db succesfuly"}
+        result = {'prediction': predicted_class_name, "message":"saved to db succesfuly"}
           # Make a PUT request to  Node.js server
         if result:
             node_api_url = f'http://localhost:8080/api/predict/{id}'
